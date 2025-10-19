@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Paź 19, 2025 at 09:20 PM
+-- Generation Time: Paź 19, 2025 at 11:34 PM
 -- Wersja serwera: 10.4.32-MariaDB-log
 -- Wersja PHP: 8.2.12
 
@@ -33,9 +33,17 @@ CREATE TABLE `equipment` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `status` enum('active','inaccessible','damaged') NOT NULL,
-  `room_id` int(11) NOT NULL,
-  `description` text NOT NULL
+  `reservation_id` int(11) DEFAULT NULL,
+  `description` text NOT NULL,
+  `reserved` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `equipment`
+--
+
+INSERT INTO `equipment` (`id`, `name`, `status`, `reservation_id`, `description`, `reserved`) VALUES
+(4, 'Projector', 'active', NULL, 'High-resolution projector for presentations and meetings.', 0);
 
 -- --------------------------------------------------------
 
@@ -47,7 +55,7 @@ CREATE TABLE `reservations` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `room_id` int(11) NOT NULL,
-  `equipment_id` int(11) NOT NULL,
+  `equipment_id` int(11) DEFAULT NULL,
   `date` date NOT NULL,
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
@@ -65,8 +73,19 @@ CREATE TABLE `rooms` (
   `name` varchar(100) NOT NULL,
   `type` enum('office','conference','open_space','storage','technical','social') NOT NULL,
   `capacity` int(11) NOT NULL,
-  `description` text NOT NULL
+  `description` text NOT NULL,
+  `reserved` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`id`, `name`, `type`, `capacity`, `description`, `reserved`) VALUES
+(1, 'Room 101', 'office', 5, 'A bright and modern office space, ideal for small team meetings or focused work. Equipped with ergonomic chairs, desks, and high-speed Wi-Fi. Perfect for collaborative projects or individual productivity.', 0),
+(2, 'Room 102', 'office', 5, 'A bright and modern office space, ideal for small team meetings or focused work. Equipped with ergonomic chairs, desks, and high-speed Wi-Fi. Perfect for collaborative projects or individual productivity.', 0),
+(3, 'Room 103', 'office', 5, 'A bright and modern office space, ideal for small team meetings or focused work. Equipped with ergonomic chairs, desks, and high-speed Wi-Fi. Perfect for collaborative projects or individual productivity.', 1),
+(4, 'Conference 104', 'conference', 13, 'A modern conference room designed for team meetings, presentations, and video conferences. Equipped with a high-resolution projector, large screen, video conferencing system, and comfortable seating for all participants. The room also features a whiteboard, flip chart, and climate control to ensure a productive and comfortable meeting environment.', 0);
 
 -- --------------------------------------------------------
 
@@ -90,16 +109,17 @@ CREATE TABLE `users` (
 -- Indeksy dla tabeli `equipment`
 --
 ALTER TABLE `equipment`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `equipment_ibfk_1` (`reservation_id`);
 
 --
 -- Indeksy dla tabeli `reservations`
 --
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `equipment_id` (`equipment_id`),
   ADD KEY `room_id` (`room_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `equipment_id` (`equipment_id`);
 
 --
 -- Indeksy dla tabeli `rooms`
@@ -121,7 +141,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `equipment`
 --
 ALTER TABLE `equipment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `reservations`
@@ -133,7 +153,7 @@ ALTER TABLE `reservations`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -146,12 +166,18 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `equipment`
+--
+ALTER TABLE `equipment`
+  ADD CONSTRAINT `equipment_ibfk_1` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `reservations`
 --
 ALTER TABLE `reservations`
-  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_ibfk_4` FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
