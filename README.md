@@ -26,7 +26,7 @@ Projekt został stworzony w celach edukacyjnych — jako praktyczne połączenie
   * Walidacja konfliktów — brak możliwości podwójnej rezerwacji.
   * Przeglądanie listy aktualnych i przyszłych rezerwacji.
 
-* 👤 **Użytkownicy (opcjonalnie)**
+* 👤 **Użytkownicy**
 
   * Logowanie i role (administrator / użytkownik).
   * Administrator może dodawać pokoje i sprzęt.
