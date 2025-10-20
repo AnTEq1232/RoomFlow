@@ -37,7 +37,7 @@
         </section>
     </nav>
     <main>
-        <form action="reserve.php" method="post">
+        <form id = "reservationFrom" action="reserve.php" method="post">
             <label for="room">Choose room: </label>
             <select name = "room" id = "room">
                 <option value = "">-- Choose room --</option>
@@ -49,18 +49,25 @@
                     }
                 ?>
             </select><br>
-            <label for = "equipment">Choose equipment: </label>
-            <select name = "equipment" id = "equipment" multiply>
-                <option value = "">-- Choose equipment --</option>
+            <label for="equipment">Choose equipment: </label>
+            <select name="equipment[]" id="equipment" multiple>
+                <option value="">-- Choose equipment --</option>
                 <?php 
                     if($GetAvailableEquipment->num_rows > 0){
                         while($row = $GetAvailableEquipment->fetch_assoc()){
-                            echo "<option value = '" . $row["name"] . "'>" . $row["name"] . "</option>";
+                            echo "<option value='" . $row["name"] . "'>" . $row["name"] . "</option>";
                         }
                     }
                 ?>
-            </select>
+            </select><br>
+            <input type="date" name="date" id="date"><br>
+            <input type="time" name="start_time" id="start_time"><br>
+            <input type="time" name="end_time" id="end_time"><br>
+            <input type="submit" value="Reserve">
+
+            <p style="color: red; display: none;" id="error">Somekind of error</p>
         </form>
     </main>
+    <script src="script.js"></script>
 </body>
 </html>
