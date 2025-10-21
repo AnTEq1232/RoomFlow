@@ -10,14 +10,12 @@
         include("db.php");
 
         $GetAvailableRoomsQuery = "SELECT rooms.name, rooms.type, rooms.capacity, rooms.description 
-                FROM rooms
-                WHERE reserved = 0";
+                FROM rooms";
         $GetAvailableRooms = $conn->query($GetAvailableRoomsQuery);
 
         $GetAvailableEquipmentQuery = "SELECT equipment.name, equipment.status, equipment.description 
                 FROM equipment
-                WHERE reserved = 0
-                AND equipment.status = 'active'";
+                WHERE equipment.status = 'active'";
         $GetAvailableEquipment = $conn->query($GetAvailableEquipmentQuery);
     ?>
     <header>
