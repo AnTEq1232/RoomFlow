@@ -6,7 +6,6 @@
             <li><a href="index.php">Home</a></li>
             <li><a href="reserve.php">Reserve</a></li>
             <li><a href="rooms.php">Rooms</a></li>
-            <li><a href="equipment.php">Equipment</a></li>
         </ul>
         <section class="userSection">
             <h3 class="userName" style="display: none;">Nie zalogowano</h3>
