@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Paź 19, 2025 at 11:34 PM
+-- Generation Time: Paź 22, 2025 at 08:04 PM
 -- Wersja serwera: 10.4.32-MariaDB-log
 -- Wersja PHP: 8.2.12
 
@@ -26,28 +26,6 @@ USE `roomflow`;
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `equipment`
---
-
-CREATE TABLE `equipment` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `status` enum('active','inaccessible','damaged') NOT NULL,
-  `reservation_id` int(11) DEFAULT NULL,
-  `description` text NOT NULL,
-  `reserved` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `equipment`
---
-
-INSERT INTO `equipment` (`id`, `name`, `status`, `reservation_id`, `description`, `reserved`) VALUES
-(4, 'Projector', 'active', NULL, 'High-resolution projector for presentations and meetings.', 0);
-
--- --------------------------------------------------------
-
---
 -- Struktura tabeli dla tabeli `reservations`
 --
 
@@ -55,12 +33,18 @@ CREATE TABLE `reservations` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `room_id` int(11) NOT NULL,
-  `equipment_id` int(11) DEFAULT NULL,
   `date` date NOT NULL,
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
   `status` enum('active','canceled','finished') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`id`, `user_id`, `room_id`, `date`, `start_time`, `end_time`, `status`) VALUES
+(1, 1, 3, '2025-10-23', '10:00:00', '11:00:00', 'active');
 
 -- --------------------------------------------------------
 
@@ -102,15 +86,15 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indeksy dla zrzutów tabel
+-- Dumping data for table `users`
 --
 
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`) VALUES
+(1, 'Antek', 'anteksalamon6@gmail.com', 'Aws123df', 'user');
+
 --
--- Indeksy dla tabeli `equipment`
+-- Indeksy dla zrzutów tabel
 --
-ALTER TABLE `equipment`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `equipment_ibfk_1` (`reservation_id`);
 
 --
 -- Indeksy dla tabeli `reservations`
@@ -118,8 +102,7 @@ ALTER TABLE `equipment`
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`),
   ADD KEY `room_id` (`room_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `equipment_id` (`equipment_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indeksy dla tabeli `rooms`
@@ -138,16 +121,10 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `equipment`
---
-ALTER TABLE `equipment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -159,25 +136,18 @@ ALTER TABLE `rooms`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `equipment`
---
-ALTER TABLE `equipment`
-  ADD CONSTRAINT `equipment_ibfk_1` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `reservations`
 --
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `reservations_ibfk_4` FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

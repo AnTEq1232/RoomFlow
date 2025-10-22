@@ -13,5 +13,11 @@ document.getElementById("reserveForm").addEventListener("submit", function(event
         return;
     }
     
-
+    fetch(`api/getReservation.php?room=${encodeURIComponent(room)}&data=${encodeURIComponent(data)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            error.textContent = "Cos bylo"; 
+            error.style.display="block";
+        });
 });
